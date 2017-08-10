@@ -1,26 +1,64 @@
-# Framework7 Vue + Webpack App Template
+# infinitescroll-bug-reproduction-demo
 
-A full-featured Framework7 + Vue + Webpack setup with hot-reload & css extraction. Based on [Vue Webpack Boilerplate](https://github.com/vuejs-templates/webpack)
+Framework7/Vue Webpack app to demo Infinite Scroll bug on iOS
 
-## Build Setup
+## Bug description
+
+NOTE: this only happens in iOS when in an actual Cordova app or "Add to Homescreen".
+
+When loading content into an infinite scroll from an async source like an API 
+call, the infinite scroll possibly has an incorrect height initially, so scrolling 
+isn't available.
+
+Once another gesture is performed (presumably then reloading the scroll 
+container or page) scrolling again becomes possible.
+
+
+# Bug reproduction steps using this repo
+
+## Build Project
 
 ``` bash
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
 # build for production with minification
 npm run build
 ```
 
-## Project Structure
+## Create a cordova app
 
-* `src/assets` - folder with static assets (images)
-* `src/components` - folder with custom `.vue` components
-* `src/css` - put custom app CSS styles here. Don't forget to import them in `main.js`
-* `src/pages` - app `.vue` pages
-* `src/main.js` - main app file where you include/import all required libs and init app
-* `src/routes.js` - app routes
-* `src/app.vue` - main app structure/component
+```bash
+# create a blank app
+cordova create infinitescroll
+
+# use the built version of this app
+rm infinitescroll/www
+
+cp -r dist infinitescroll/www
+
+cd infinitescroll
+
+cordova platform add ios
+```
+
+## Run the app on iOS (the simulator is fine, usually)
+
+```bash
+cordova run ios
+```
+
+## Test the bug
+
+When the app has lunched on the simulator, click the "About" link.
+
+Once the placeholder content has finished loading, try scrolling down the page. 
+
+It should fail to scroll.
+
+Now try beginning a "swipe to go back" gesture, but don't complete it and 
+remain on this page.
+
+Now try scrolling the page.
+
+It should scroll.
